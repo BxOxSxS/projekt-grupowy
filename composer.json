@@ -1,0 +1,19 @@
+{
+    "name": "boss/projekt-grupowy",
+    "type": "project",
+    "license": "AGPL",
+    "autoload": {
+        "psr-4": {
+            "Boss\\ProjektGrupowy\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "BxOxSxS",
+            "email": "BxOxSxS@protonmail.com"
+        }
+    ],
+    "require": {
+        "steampixel/simple-php-router": "^0.7.1"
+    }
+}
