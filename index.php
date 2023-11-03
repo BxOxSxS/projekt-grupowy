@@ -21,10 +21,20 @@
             if (!in_array($_REQUEST['ORDER'], $columns)) {
                 http_response_code(400);
                 die("No columns ". $_REQUEST['ORDER'] . " in [" . implode(', ', $columns) . "]");
-
             }
             
             $q .= " ORDER BY " . $_REQUEST['ORDER'] . " $direction";
+        }
+
+        if (isset($_REQUEST['LIMIT'])) {
+            $limit = intval($_REQUEST['LIMIT']);
+
+            if ($limit < 1) {
+                http_response_code(400);
+                die("Invalid LIMIT value: " . $_REQUEST['LIMIT']);
+            }
+
+            $q .= " LIMIT " . $limit;
         }
 
         $preparedQ = $db->prepare($q);
