@@ -7,7 +7,26 @@
 
     Route::add('/', function() {
         global $db;
-        $q = "SELECT * FROM samochody;";
+
+        $q = "SELECT * FROM samochody ";
+
+        if (isset($_REQUEST['ORDER'])) {
+            if ($_REQUEST['ORDER_DIRECTION'] == "DESC") {
+                $direction = "DESC";
+            } else {
+                $direction = "ASC";
+            }
+
+            $columns = get_columns($db, "samochody");
+            if (!in_array($_REQUEST['ORDER'], $columns)) {
+                http_response_code(400);
+                die("No columns ". $_REQUEST['ORDER'] . " in [" . implode(', ', $columns) . "]");
+
+            }
+            
+            $q .= " ORDER BY " . $_REQUEST['ORDER'] . " $direction";
+        }
+
         $preparedQ = $db->prepare($q);
         if (!$preparedQ->execute()) {
             http_response_code(500);
@@ -19,6 +38,25 @@
         }
     });
 
+    Route::add('/columns', function() {
+        global $db;
 
-    Route::run('/bsadowski/projekt-grupowy')
+        $columns = get_columns($db, "samochody");
+
+        header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($columns);
+    });
+
+
+    Route::run('/bsadowski/projekt-grupowy');
+
+
+    function get_columns(mysqli $db, String $table): array {
+        $result = $db->query("SHOW COLUMNS FROM $table");
+        $columns = [];
+        while ($row = $result->fetch_assoc()) {
+            $columns[] = $row['Field'];
+        }
+        return $columns;
+    }
 ?>
