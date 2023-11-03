@@ -8,7 +8,58 @@
     Route::add('/', function() {
         global $db;
 
-        $q = "SELECT * FROM samochody ";
+        $q = "SELECT * FROM samochody";
+
+        if (isset($_REQUEST['WHERE'])) {
+            $a = explode(' ', $_REQUEST['WHERE']);
+            $columns = get_columns($db, "samochody");
+            $comprasion_op = ["=" , "<>", "!=", "<", ">", "<=", ">=", "<=>", "LIKE"];
+            $pattern = '/^(\d+|"[a-zA-Z0-9]*"|\'[a-zA-Z0-9]*\')$/';
+            $logical_op = ["AND", "&&", "OR", "||", "XOR"];
+
+            $i = 0;
+            $str = " WHERE ";
+            while (true) {
+                if (!isset($a[$i]) || !isset($a[$i+1]) || !isset($a[$i+2])) {
+                    http_response_code(400);
+                    die ("Invalid number of arguments in WHERE value");
+                }
+
+
+                if (!in_array($a[$i], $columns)) {
+                    http_response_code(400);
+                    die("No column ". $a[$i] . " in [" . implode(', ', $columns) . "]");
+                }
+                $str .= $a[$i] . " ";
+
+                if (!in_array($a[$i+1], $comprasion_op)) {
+                    http_response_code(400);
+                    die("Invalid operator ". $a[$i+1] . " aviable: [" . implode(', ', $comprasion_op) . "]");
+                }
+                $str .= $a[$i+1] . " ";
+
+                if (preg_match($pattern, $a[$i+2]) != 1) {
+                    http_response_code(400);
+                    die('Invalid value of compresion: ' . $a[$i+2]);
+                }
+
+                $str .= $a[$i+2] . " ";
+
+                if (isset($a[$i+3])) {
+                    if (!in_array($a[$i+3], $logical_op)) {
+                        http_response_code(400);
+                        die("Invalid operator ". $a[$i+3] . " aviable: [" . implode(', ', $logical_op) . "]");
+                    }
+                    $str .= $a[$i+3] . " ";
+                    $i = $i + 4;
+                    continue;
+                } else {
+                    break;
+                }
+                
+            }
+            $q .= $str;
+        }
 
         if (isset($_REQUEST['ORDER'])) {
             if ($_REQUEST['ORDER_DIRECTION'] == "DESC") {
@@ -20,7 +71,7 @@
             $columns = get_columns($db, "samochody");
             if (!in_array($_REQUEST['ORDER'], $columns)) {
                 http_response_code(400);
-                die("No columns ". $_REQUEST['ORDER'] . " in [" . implode(', ', $columns) . "]");
+                die("No column ". $_REQUEST['ORDER'] . " in [" . implode(', ', $columns) . "]");
             }
             
             $q .= " ORDER BY " . $_REQUEST['ORDER'] . " $direction";
