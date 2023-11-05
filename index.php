@@ -14,7 +14,7 @@
             $a = explode(' ', $_REQUEST['WHERE']);
             $columns = get_columns($db, "samochody");
             $comprasion_op = ["=" , "<>", "!=", "<", ">", "<=", ">=", "<=>", "LIKE"];
-            $pattern = '/^(\d+|"[a-zA-Z0-9]*"|\'[a-zA-Z0-9]*\')$/';
+            $pattern = '/^(\d+|"[a-zA-Z0-9%_]*"|\'[a-zA-Z0-9%_]*\')$/';
             $logical_op = ["AND", "&&", "OR", "||", "XOR"];
 
             $i = 0;
@@ -94,8 +94,15 @@
         } else {
             $row = $preparedQ->get_result();
 
+            $array = $row->fetch_all();
+
+            if (count($array) === 0) {
+                http_response_code(404);
+                die("Table is empty or WHERE closure gives no results");
+            }
+
             header('Content-Type: application/json; charset=utf-8');
-            echo json_encode($row->fetch_all());
+            echo json_encode($array);
         }
     });
 
