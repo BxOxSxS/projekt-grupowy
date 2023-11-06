@@ -12,7 +12,6 @@
 
         if (isset($_REQUEST['WHERE'])) {
             $a = explode(' ', $_REQUEST['WHERE']);
-            $columns = get_columns($db, "samochody");
             $comprasion_op = ["=" , "<>", "!=", "<", ">", "<=", ">=", "<=>", "LIKE"];
             $pattern = '/^(\d+|"[a-zA-Z0-9%_]*"|\'[a-zA-Z0-9%_]*\')$/';
             $logical_op = ["AND", "&&", "OR", "||", "XOR"];
@@ -104,6 +103,61 @@
             echo json_encode($array);
         }
     });
+    Route::add('/', function() {
+        $body = file_get_contents('php://input');
+
+        $bodyArr = json_decode($body);
+
+        if ($bodyArr == NULL) {
+            http_response_code(400);
+            die("Invalid JSON body:\n" . $body);
+        }
+
+        global $db;
+        $columns = get_columns($db, "samochody");
+
+        $tmp = "";
+        foreach ($columns as $col) {
+            foreach ($bodyArr as $element) {
+                if ($col['name'] == strval($element->name)) {
+                    if ($element->value == null) {
+                        $tmp .= "NULL" . ", ";
+                    } else if (is_int($element->value)) {
+                        $tmp .= $element->value . ", ";
+                    } else {
+                        $pattern = '/^[a-zA-Z0-9]*$/';
+                        if (preg_match($pattern, $element->value) != 1) {
+                            http_response_code(400);
+                            die("Value " . $element->value . " is not alphanumeratic");
+                        }
+                        
+                        $tmp .= "\"" . $element->value . "\", ";
+                    }
+                    continue 2;
+                }
+            }
+            http_response_code(400);
+            die("Cound not find value for columns: " . $col['name']);
+        }
+        $tmp = substr($tmp, 0, -2);
+        $q = "INSERT INTO samochody VALUES ($tmp)";
+
+        try {
+            $r = $db->query($q);
+        } catch (Exception $e) {
+            http_response_code(500);
+            die("MySQL error: " . $e->getMessage());
+        }
+
+        if ($r == false) {
+            http_response_code(500);
+            die("MySQL error: " . $db->error);
+        }
+
+        $id = $db->insert_id;
+        echo $id;
+        
+    }, "post");
 
     Route::add('/columns', function() {
         global $db;
