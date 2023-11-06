@@ -26,9 +26,9 @@
                 }
 
 
-                if (!in_array($a[$i], $columns)) {
+                if (!is_in_columns($db, "samochody", $a[$i])) {
                     http_response_code(400);
-                    die("No column ". $a[$i] . " in [" . implode(', ', $columns) . "]");
+                    die("Column ". $a[$i] . " does not exist in table");
                 }
                 $str .= $a[$i] . " ";
 
@@ -68,10 +68,9 @@
                 $direction = "ASC";
             }
 
-            $columns = get_columns($db, "samochody");
-            if (!in_array($_REQUEST['ORDER'], $columns)) {
+            if (!is_in_columns($db, "samochody", $_REQUEST['ORDER'])) {
                 http_response_code(400);
-                die("No column ". $_REQUEST['ORDER'] . " in [" . implode(', ', $columns) . "]");
+                die("Column ". $_REQUEST['ORDER'] . " does not exist in table");
             }
             
             $q .= " ORDER BY " . $_REQUEST['ORDER'] . " $direction";
@@ -123,8 +122,19 @@
         $result = $db->query("SHOW COLUMNS FROM $table");
         $columns = [];
         while ($row = $result->fetch_assoc()) {
-            $columns[] = $row['Field'];
+            $columns[] = array( 'name' => $row['Field'], 'type' => $row['Type']);
         }
         return $columns;
+    }
+
+    function is_in_columns(mysqli $db, string $table, string $name): bool {
+        $columns = get_columns($db, $table);
+
+        foreach ($columns as $col) {
+            if ($col['name'] == $name) {
+                return true;
+            }
+        }
+        return false;
     }
 ?>
