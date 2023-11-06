@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Czas generowania: 27 Paź 2023, 11:36
--- Wersja serwera: 10.4.24-MariaDB
--- Wersja PHP: 8.0.19
+-- Host: localhost
+-- Generation Time: Lis 06, 2023 at 06:08 PM
+-- Wersja serwera: 10.4.28-MariaDB
+-- Wersja PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Baza danych: `samochody`
+-- Database: `samochody`
 --
 
 -- --------------------------------------------------------
@@ -28,15 +28,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `samochody` (
-  `id` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL,
   `marka` varchar(50) DEFAULT NULL,
   `model` varchar(50) DEFAULT NULL,
   `rocznik` varchar(50) DEFAULT NULL,
   `cena` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Zrzut danych tabeli `samochody`
+-- Dumping data for table `samochody`
 --
 
 INSERT INTO `samochody` (`id`, `marka`, `model`, `rocznik`, `cena`) VALUES
@@ -60,6 +60,26 @@ INSERT INTO `samochody` (`id`, `marka`, `model`, `rocznik`, `cena`) VALUES
 (18, 'GMC', 'Yukon', '2004', 137497),
 (19, 'Ford', 'F-Series', '2011', 831256),
 (20, 'Toyota', 'Prius c', '2012', 198069);
+
+--
+-- Indeksy dla zrzutów tabel
+--
+
+--
+-- Indeksy dla tabeli `samochody`
+--
+ALTER TABLE `samochody`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `samochody`
+--
+ALTER TABLE `samochody`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
