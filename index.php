@@ -104,6 +104,34 @@
         }
     });
     Route::add('/', function() {
+        /* example body input:
+            [
+                {
+                    "name": "id",
+                    "value": null
+                },
+                {
+                    "name": "marka",
+                    "value": "test"
+                },
+                {
+                    "name": "model",
+                    "value": "test2"
+                },
+                {
+                    "name": "model",
+                    "value": "test3"
+                },
+                {
+                    "name": "rocznik",
+                    "value": 2024
+                },
+                {
+                    "name": "cena",
+                    "value": 0
+                }
+            ]
+        */
         $body = file_get_contents('php://input');
 
         $bodyArr = json_decode($body);
