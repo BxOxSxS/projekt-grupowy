@@ -187,6 +187,78 @@
         
     }, "post");
 
+    Route::add('/', function() {
+        $body = file_get_contents('php://input');
+
+        $bodyArr = json_decode($body);
+
+        if ($bodyArr == NULL) {
+            http_response_code(400);
+            die("Invalid JSON body:\n" . $body);
+        }
+
+        global $db;
+        $columns = get_columns($db, "samochody");
+
+        $tmp = "";
+        $update_tmp = "";
+        $id = NULL;
+        foreach ($columns as $col) {
+            foreach ($bodyArr as $element) {
+                if ($element->name == "id") {
+                    $id = $element->value;
+                };
+
+                if ($col['name'] == strval($element->name)) {
+                    if ($element->value == null) {
+                        $tmp .= "NULL" . ", ";
+                        $update_tmp .= "$element->name = NULL, ";
+                    } else if (is_int($element->value)) {
+                        $tmp .= $element->value . ", ";
+                        $update_tmp .= "$element->name = $element->value, ";
+                    } else {
+                        $pattern = '/^[a-zA-Z0-9]*$/';
+                        if (preg_match($pattern, $element->value) != 1) {
+                            http_response_code(400);
+                            die("Value " . $element->value . " is not alphanumeratic");
+                        }
+                        
+                        $tmp .= "\"" . $element->value . "\", ";
+                        $update_tmp .= "$element->name = \"$element->value\", ";
+                    }
+                    continue 2;
+                }
+            }
+            http_response_code(400);
+            die("Cound not find value for columns: " . $col['name']);
+        }
+        $tmp = substr($tmp, 0, -2);
+        http_response_code(201);
+        $q = "INSERT INTO samochody VALUES ($tmp)";
+        if ($id != NULL) {
+            $q2 = "SELECT * FROM samochody WHERE id = $id";
+            $r2 = $db->query($q2);
+            while ($_ = $r2->fetch_assoc()) {
+                $update_tmp = substr($update_tmp, 0, -2);
+                $q = "UPDATE samochody SET $update_tmp WHERE id = $id";
+                http_response_code(200);
+            }
+        }
+
+        try {
+            $r = $db->query($q);
+        } catch (Exception $e) {
+            http_response_code(500);
+            die("MySQL error: " . $e->getMessage());
+        }
+
+        if ($r == false) {
+            http_response_code(500);
+            die("MySQL error: " . $db->error);
+        }
+
+    }, "put");
+
     Route::add('/columns', function() {
         global $db;
 
