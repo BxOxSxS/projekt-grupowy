@@ -329,6 +329,38 @@
         http_response_code(204);
     }, "patch");
 
+    Route::add("/", function() {
+        $id = (int) $_REQUEST["id"];
+
+        if (!is_int($id) || $id == 0) {
+            http_response_code(400);
+            die("Invalid or no value for id: " . $_REQUEST["id"]);
+        }
+
+        global $db;
+        $pq = $db->prepare("DELETE FROM samochody WHERE id = ?");
+        $pq->bind_param("i", $id);
+
+        try {
+            $r = $pq->execute();
+        } catch (Exception $e) {
+            http_response_code(500);
+            die("MySQL error: " . $e->getMessage());
+        }
+
+        if ($r == false) {
+            http_response_code(500);
+            die("MySQL error: " . $db->error);
+        }
+
+        if($db->affected_rows == 0) {
+            http_response_code(404);
+            die("No row for id: $id");
+        }
+        http_response_code(204);
+
+    }, "delete");
+
     Route::add('/columns', function() {
         global $db;
 
