@@ -241,7 +241,7 @@
             while ($_ = $r2->fetch_assoc()) {
                 $update_tmp = substr($update_tmp, 0, -2);
                 $q = "UPDATE samochody SET $update_tmp WHERE id = $id";
-                http_response_code(200);
+                http_response_code(204);
             }
         }
 
@@ -257,6 +257,10 @@
             die("MySQL error: " . $db->error);
         }
 
+        if ($q[0] = "I") {
+            $id = $db->insert_id;
+            echo $id;
+        }
     }, "put");
 
     Route::add('/columns', function() {
