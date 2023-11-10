@@ -331,9 +331,9 @@
     }, "patch");
 
     Route::add("/", function() {
-        $id = (int) $_REQUEST["id"];
+        $id = (int) $_REQUEST["ID"];
 
-        if (!is_int($id) || $id == 0) {
+        if (!is_int($id) || $id == 0 || !isset($_REQUEST["ID"])) {
             http_response_code(400);
             die("Invalid or no value for id: " . $_REQUEST["id"]);
         }
