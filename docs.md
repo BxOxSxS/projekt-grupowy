@@ -1,5 +1,6 @@
 Pliki projektu należy na serwerze HTTP położyć w ścieżce relatywnej `/bsadowski/projekt-grupowy`. Od tej ścieżki są wykonywane żądania opisane niżej. 
 
+Należy również zainstalować zalożności za pomocą narzędzia [composer](https://getcomposer.org/) poleceniem `composer install` w folderze projektu.
 # `/`
 
 ## GET
