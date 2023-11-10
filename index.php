@@ -182,6 +182,7 @@
             die("MySQL error: " . $db->error);
         }
 
+        http_response_code(201);
         $id = $db->insert_id;
         echo $id;
         
