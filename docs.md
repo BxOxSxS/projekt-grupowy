@@ -1,3 +1,5 @@
+Pliki projektu należy na serwerze HTTP położyć w ścieżce relatywnej `/bsadowski/projekt-grupowy`. Od tej ścieżki są wykonywane żądania opisane niżej. 
+
 # `/`
 
 ## GET
