@@ -1,6 +1,6 @@
 # `/`
 
-##GET
+## GET
 
 Żądanie zwraca w postaci JSON tablice obiektów zawierające wartości kolumna po kolej z kodem 200 (OK) w przypadku powodzenia. W przypadku błędnych danych zwraca kod 400 (Bad Request).
 Dostępne paremetry URL manipulujące zwracaną wartością:
@@ -22,7 +22,7 @@ Dostępne paremetry URL manipulujące zwracaną wartością:
 - `LIMIT` sprawia że API zwraca tylko pierwsze X rekordów z bazy, gdzie X to wartość typu INT parametru
 
 
-##POST
+## POST
 Żądanie wstawia nowy rekord do bazy na podstawie danych w formie JSON z Body. Wartość ta to tablica z obiektami w formie `"{nazwa kolumny}": {wartość}`. Wartość to jedna z typów: `null, INT, String` zgodnie ze standartem JSON. Kolumna typu ID z autoinkrementacją może przyjąć wartość `null` co spowoduje automatyczne przydzielenie wartości przez serwer bazy danych. Serwer zwraca id nowego obiektu wraz z kodem 201 (Created) jeśli żądanie zostało pomyślnie wykonane. W przypadku błędnych danych zwraca kod 400 (Bad Request)
 Przykładowa zawartość body:
 ```JSON
@@ -54,10 +54,10 @@ Przykładowa zawartość body:
     ]
 ```
 
-##PUT
+## PUT
 Żądanie bardzo podobne do POST jednak w przypadku podania istniejącego ID aktualizuje dane. W takim przypadku zwraca kod 204 (No content). Gdy nowy rekord jest utworzony serwer zwraca kod 201 (Created). W przypadku błędnych danych zwraca kod 400 (Bad Request). Body w dokłanie takej samej formie jak w POST
 
-##PATCH
+## PATCH
 Żądanie służy tylko do aktualizacji danych konkretego rekordu. Rekord ten jest indentyfikowany za pomocą kolumny ID. Dane są w formie JSON w Body żądanie w postaci tablicy wartości do aktualizacji. Nie musi zawierać danych do każdej kolumny. Serwer zwraca kod 204 (No content) w przypadku powodzenia, 400 (Bad request) w przypadku błędnych danych. W przypadku podanie nieistniejącego ID zwaraca 404 (Not Found). 
 Przykładowa zawartość body:
 ```JSON
@@ -77,11 +77,11 @@ Przykładowa zawartość body:
     ]
 ```
 
-##DELETE
+## DELETE
 Żądanie usuwa wybrany rekord po ID. Wartośc ta jest przesyłana za pomocą parametru URL `ID` i jest typu INT. Serwer zwraca kod 204 (No content) w przypadku powodzenia, 400 (Bad request) w przypadku błędnych danych. W przypadku podanie nieistniejącego ID zwaraca 404 (Not Found).
 
-#`/columns`
-##GET
+# `/columns`
+## GET
 Żądanie nie przyjmujące parametrów. Zwraca w postaci JSON array kolumn wraz z typem ich danych. Na przykład:
 ```JSON
 [
