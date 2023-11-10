@@ -368,7 +368,7 @@
         $columns = get_columns($db, "samochody");
 
         header('Content-Type: application/json; charset=utf-8');
-            echo json_encode($columns);
+        echo json_encode($columns);
     });
 
 
